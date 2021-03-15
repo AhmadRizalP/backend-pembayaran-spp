@@ -27,6 +27,12 @@ module.exports = {
       no_telp: {
         type: Sequelize.STRING,
       },
+      username: {
+        type: Sequelize.STRING,
+      },
+      password: {
+        type: Sequelize.STRING,
+      },
       id_spp: {
         type: Sequelize.INTEGER,
         allowNull: false,
