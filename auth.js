@@ -3,7 +3,6 @@ const SECRET_KEY = 'adminspp';
 auth = (req, res, next) => {
   let header = req.headers.authorization;
   let token = header && header.split(' ')[1];
-
   let jwtHeader = {
     algorithm: 'HS256',
   };
@@ -22,5 +21,4 @@ auth = (req, res, next) => {
     });
   }
 };
-
 module.exports = auth;

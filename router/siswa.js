@@ -27,6 +27,26 @@ app.get('/:nisn', async (req, res) => {
     });
 });
 
+app.post('/login', async (req, res) => {
+  let param = {
+    username: req.body.username,
+    password: md5(req.body.password),
+  };
+
+  let result = await siswa.findOne({ where: param });
+  if (result) {
+    res.json({
+      logged: true,
+      data: result,
+    });
+  } else {
+    res.json({
+      logged: false,
+      message: 'Invalid Username and Password',
+    });
+  }
+});
+
 app.post('/', auth, async (req, res) => {
   let data = {
     nisn: req.body.nisn,

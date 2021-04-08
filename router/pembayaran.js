@@ -12,14 +12,14 @@ const pembayaran = models.pembayaran;
 const spp = models.spp;
 
 app.get('/', auth, async (req, res) => {
-  let result = await pembayaran.findAll();
+  let result = await pembayaran.findAll({ include: ['tagihan', 'siswa'] });
   res.json(result);
 });
 
 app.get('/:nisn', async (req, res) => {
   let param = { nisn: req.params.nisn };
   pembayaran
-    .findAll({ where: param })
+    .findAll({ where: param, include: ['tagihan'] })
     .then((result) => {
       res.json(result);
     })
@@ -144,10 +144,23 @@ app.put('/', auth, async (req, res) => {
 
 app.delete('/:id_pembayaran', auth, async (req, res) => {
   let param = { id_pembayaran: req.params.id_pembayaran };
+  let result = await pembayaran.findOne({ where: param });
+  let id_tagihan = { id_tagihan: result.id_tagihan };
+
   pembayaran
     .destroy({ where: param })
     .then((result) => {
-      res.json({ message: 'data has been deleted' });
+      let data = {
+        konfirmasi: 0,
+      };
+      tagihan
+        .update(data, { where: id_tagihan })
+        .then((result) => {
+          res.json({ message: 'data has been deleted' });
+        })
+        .catch((error) => {
+          res.json({ message: error.message });
+        });
     })
     .catch((error) => {
       res.json({ message: error.message });

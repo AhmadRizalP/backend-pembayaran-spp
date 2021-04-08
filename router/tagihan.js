@@ -7,16 +7,34 @@ const models = require('../models/index');
 const tagihan = models.tagihan;
 const siswa = models.siswa;
 const auth = require('../auth');
+const spp = require('../models/spp');
 
 app.get('/', auth, async (req, res) => {
-  let result = await tagihan.findAll();
+  let result = await tagihan.findAll({
+    include: [
+      {
+        model: siswa,
+        as: 'siswa',
+        include: ['spp'],
+      },
+    ],
+  });
   res.json(result);
 });
 
 app.get('/:nisn', async (req, res) => {
   let param = { nisn: req.params.nisn };
   tagihan
-    .findAll({ where: param })
+    .findAll({
+      where: param,
+      include: [
+        {
+          model: siswa,
+          as: 'siswa',
+          include: ['spp'],
+        },
+      ],
+    })
     .then((result) => {
       res.json(result);
     })
